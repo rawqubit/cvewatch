@@ -3,6 +3,7 @@
 > **Automated CVE monitoring daemon** with AI-powered triage and Slack/Discord alerting. Filters by your tech stack so you only get notified about vulnerabilities that actually affect you.
 
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![CI](https://github.com/rawqubit/cvewatch/actions/workflows/ci.yml/badge.svg)](https://github.com/rawqubit/cvewatch/actions/workflows/ci.yml)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4.1-412991?style=flat-square&logo=openai&logoColor=white)](https://openai.com/)
 [![NVD](https://img.shields.io/badge/Data-NVD%20API%202.0-blue?style=flat-square)](https://nvd.nist.gov/developers/vulnerabilities)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
