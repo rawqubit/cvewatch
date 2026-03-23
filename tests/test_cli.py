@@ -1,22 +1,56 @@
 """
-Tests for cvewatch — CVE monitoring daemon.
+Tests for cvewatch.
+CLI structure: main.py fetch <CVE_ID> [--stack]
+               main.py watch [--stack] [--cvss-min] [--interval] [--once]
+               main.py digest [--days] [--stack] [--cvss-min] [--output]
 """
 import sys
+import os
 import subprocess
 import pytest
 
-def test_cli_help():
-    result = subprocess.run([sys.executable, "main.py", "--help"], capture_output=True, text=True)
-    assert result.returncode == 0
 
-def test_dry_run_mode():
-    """Dry run should not fail on missing credentials."""
-    result = subprocess.run(
-        [sys.executable, "main.py", "--dry-run", "--stack", "python,django"],
-        capture_output=True, text=True
+def run(*args, env=None):
+    return subprocess.run(
+        [sys.executable, "main.py"] + list(args),
+        capture_output=True, text=True,
+        env=env or os.environ.copy()
     )
-    assert result.returncode in (0, 1)
 
-def test_version_flag():
-    result = subprocess.run([sys.executable, "main.py", "--version"], capture_output=True, text=True)
-    assert result.returncode in (0, 1)
+
+def test_root_help():
+    r = run("--help")
+    assert r.returncode == 0
+    assert "fetch" in r.stdout or "watch" in r.stdout or "digest" in r.stdout
+
+
+def test_fetch_help():
+    r = run("fetch", "--help")
+    assert r.returncode == 0
+    assert "--stack" in r.stdout
+
+
+def test_watch_help():
+    r = run("watch", "--help")
+    assert r.returncode == 0
+    assert "--once" in r.stdout
+    assert "--cvss-min" in r.stdout
+
+
+def test_digest_help():
+    r = run("digest", "--help")
+    assert r.returncode == 0
+    assert "--days" in r.stdout
+    assert "--output" in r.stdout
+
+
+def test_fetch_requires_cve_id():
+    """fetch subcommand must fail without a CVE ID."""
+    r = run("fetch")
+    assert r.returncode != 0
+
+
+def test_module_compiles():
+    r = subprocess.run([sys.executable, "-m", "py_compile", "main.py"],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
