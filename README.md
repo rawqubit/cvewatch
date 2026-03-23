@@ -166,6 +166,35 @@ CMD ["python", "main.py", "watch", "--stack", "python,nginx", "--interval", "360
 
 ---
 
+
+## Demo
+
+```
+$ cvewatch --stack "python,django,nginx,postgres" --slack-webhook $SLACK_URL
+
+ cvewatch v1.1.0  CVE Monitoring Daemon
+ Stack: python, django, nginx, postgres
+ Polling NVD API every 6 hours
+
+[2025-03-10 09:00:00] Polling NVD API...
+[2025-03-10 09:00:04] 847 new CVEs in last 24h
+
+ Relevant to your stack: 3 CVEs
+
++---------------+-------+--------+------------------------------------------+
+| CVE ID        | CVSS  | Stack  | Summary                                  |
++---------------+-------+--------+------------------------------------------+
+| CVE-2025-1234 |  9.8  | django | SQL injection via ORM raw() bypass       |
+| CVE-2025-5678 |  7.5  | nginx  | HTTP/2 rapid reset (upstream variant)    |
+| CVE-2025-9012 |  5.3  | python | tarfile path traversal in stdlib         |
++---------------+-------+--------+------------------------------------------+
+
+ Slack alert sent for 2 high/critical CVEs
+ CVE-2025-9012 suppressed (below CVSS threshold 7.0)
+
+[2025-03-10 09:00:05] Next poll in 6h. Watching your stack.
+```
+
 ## Contributing
 
 Priority areas:
