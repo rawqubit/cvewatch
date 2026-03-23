@@ -1,8 +1,8 @@
 """
 Tests for cvewatch.
-CLI structure: main.py fetch <CVE_ID> [--stack]
-               main.py watch [--stack] [--cvss-min] [--interval] [--once]
-               main.py digest [--days] [--stack] [--cvss-min] [--output]
+CLI: main.py fetch <CVE_ID> [--stack]
+     main.py watch [--stack] [--cvss-min] [--interval] [--once]
+     main.py digest [--days] [--stack] [--cvss-min] [--output]
 """
 import sys
 import os
@@ -10,18 +10,19 @@ import subprocess
 import pytest
 
 
-def run(*args, env=None):
+def run(*args):
+    env = os.environ.copy()
+    env.setdefault('OPENAI_API_KEY', 'sk-dummy')
     return subprocess.run(
         [sys.executable, "main.py"] + list(args),
-        capture_output=True, text=True,
-        env=env or os.environ.copy()
+        capture_output=True, text=True, env=env
     )
 
 
 def test_root_help():
     r = run("--help")
     assert r.returncode == 0
-    assert "fetch" in r.stdout or "watch" in r.stdout or "digest" in r.stdout
+    assert any(x in r.stdout for x in ["fetch", "watch", "digest"])
 
 
 def test_fetch_help():
@@ -45,7 +46,6 @@ def test_digest_help():
 
 
 def test_fetch_requires_cve_id():
-    """fetch subcommand must fail without a CVE ID."""
     r = run("fetch")
     assert r.returncode != 0
 
